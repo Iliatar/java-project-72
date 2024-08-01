@@ -1,8 +1,14 @@
 package hexlet.code;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
@@ -11,7 +17,22 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    private static Javalin getApp() {
+    private static Javalin getApp() throws Exception {
+        var hikaryConfig = new HikariConfig();
+        hikaryConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        var dataSource = new HikariDataSource(hikaryConfig);
+
+        var url = App.class.getClassLoader().getResourceAsStream("schena.sql");
+        var sql = new BufferedReader(new InputStreamReader(url))
+                .lines().collect(Collectors.joining("\n"));
+
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+
+        BaseRepository.dataSource = dataSource;
+
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte());
@@ -25,7 +46,12 @@ public class App {
     }
 
     public static void main(String[] args) {
-        Javalin app = getApp();
-        app.start(getPort());
+        try {
+            Javalin app = getApp();
+            app.start(getPort());
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
     }
 }
