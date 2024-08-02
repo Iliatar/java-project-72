@@ -19,10 +19,11 @@ public class App {
 
     private static Javalin getApp() throws Exception {
         var hikaryConfig = new HikariConfig();
-        hikaryConfig.setJdbcUrl("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        hikaryConfig.setJdbcUrl(jdbcUrl);
         var dataSource = new HikariDataSource(hikaryConfig);
 
-        var url = App.class.getClassLoader().getResourceAsStream("schena.sql");
+        var url = App.class.getClassLoader().getResourceAsStream("schema.sql");
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));
 
@@ -49,8 +50,7 @@ public class App {
         try {
             Javalin app = getApp();
             app.start(getPort());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e);
         }
     }

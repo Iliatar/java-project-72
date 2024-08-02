@@ -7,11 +7,11 @@ public class Url {
     private String name;
     private Timestamp createdAt;
 
-    public Url (String name) {
+    public Url(String name) {
         this.name = name;
     }
 
-    public void setId (int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
