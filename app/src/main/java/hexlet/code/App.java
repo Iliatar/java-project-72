@@ -26,7 +26,8 @@ public class App {
         hikaryConfig.setJdbcUrl(jdbcUrl);
         var dataSource = new HikariDataSource(hikaryConfig);
 
-        var url = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        var schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
+        var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));
 
