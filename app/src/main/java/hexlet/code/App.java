@@ -5,13 +5,22 @@ import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.dto.BasePage;
+import hexlet.code.model.Url;
+import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class App {
@@ -43,8 +52,33 @@ public class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get("/", ctx -> {
-            ctx.render("index.jte");
+        app.get(NamedRoutes.rootPath(), ctx -> {
+            BasePage page = new BasePage();
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
+            ctx.render("index.jte", model("page", page));
+        });
+
+        app.post(NamedRoutes.urlsPath(), ctx -> {
+            String rawUrl = ctx.formParam("url");
+            Url newUrl = null;
+            try {
+                URI uri = new URI(rawUrl);
+                URL parsedUrl = uri.toURL();
+                newUrl = new Url(parsedUrl.getProtocol() + "://" + parsedUrl.getHost() + ":" + parsedUrl.getPort());
+            } catch (RuntimeException e) {
+                ctx.sessionAttribute("flash", "Некорректный URL");
+                ctx.redirect(NamedRoutes.rootPath());
+                return;
+            }
+
+            Optional<Url> storedUrl = UrlRepository.find(newUrl.getName());
+            if (storedUrl.isPresent()) {
+                ctx.sessionAttribute("flash", "Страница уже существует");
+            } else {
+                UrlRepository.save(newUrl);
+                ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            }
+            ctx.redirect(NamedRoutes.urlsPath());
         });
 
         return app;

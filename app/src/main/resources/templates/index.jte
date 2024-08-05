@@ -1,5 +1,7 @@
-@template.layouts.page(
+@param hexlet.code.dto.BasePage page
 
+@template.layouts.page(
+    page = page,
     content = @`
         <section>
             <div class="container-fluid bg-dark p-5">

@@ -1,21 +1,28 @@
 package hexlet.code.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Url {
-    private int id;
+    private long id;
     private String name;
     private Timestamp createdAt;
 
     public Url(String name) {
+        createdAt = Timestamp.valueOf(LocalDateTime.now());
         this.name = name;
     }
 
-    public void setId(int id) {
+    public Url(String name, Timestamp createdAt) {
+        this.name = name;
+        this.createdAt = createdAt;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
