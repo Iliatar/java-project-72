@@ -18,6 +18,7 @@ public class UrlController {
     public static void create(Context ctx) {
         String rawUrl = ctx.formParam("url");
         Url newUrl = null;
+
         try {
             URI uri = new URI(rawUrl);
             URL parsedUrl = uri.toURL();
@@ -47,6 +48,7 @@ public class UrlController {
 
     public static void index(Context ctx) {
         List<Url> urls;
+
         try {
             urls = UrlRepository.getEntities();
         }
