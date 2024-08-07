@@ -5,22 +5,16 @@ import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
-import hexlet.code.dto.BasePage;
-import hexlet.code.model.Url;
+import hexlet.code.controller.RootController;
+import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class App {
@@ -30,10 +24,10 @@ public class App {
     }
 
     private static Javalin getApp() throws Exception {
-        var hikaryConfig = new HikariConfig();
+        var hikariConfig = new HikariConfig();
         String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        hikaryConfig.setJdbcUrl(jdbcUrl);
-        var dataSource = new HikariDataSource(hikaryConfig);
+        hikariConfig.setJdbcUrl(jdbcUrl);
+        var dataSource = new HikariDataSource(hikariConfig);
 
         var schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
         var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
@@ -52,34 +46,9 @@ public class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get(NamedRoutes.rootPath(), ctx -> {
-            BasePage page = new BasePage();
-            page.setFlash(ctx.consumeSessionAttribute("flash"));
-            ctx.render("index.jte", model("page", page));
-        });
-
-        app.post(NamedRoutes.urlsPath(), ctx -> {
-            String rawUrl = ctx.formParam("url");
-            Url newUrl = null;
-            try {
-                URI uri = new URI(rawUrl);
-                URL parsedUrl = uri.toURL();
-                newUrl = new Url(parsedUrl.getProtocol() + "://" + parsedUrl.getHost() + ":" + parsedUrl.getPort());
-            } catch (RuntimeException e) {
-                ctx.sessionAttribute("flash", "Некорректный URL");
-                ctx.redirect(NamedRoutes.rootPath());
-                return;
-            }
-
-            Optional<Url> storedUrl = UrlRepository.find(newUrl.getName());
-            if (storedUrl.isPresent()) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-            } else {
-                UrlRepository.save(newUrl);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            }
-            ctx.redirect(NamedRoutes.urlsPath());
-        });
+        app.get(NamedRoutes.rootPath(), RootController::index);
+        app.post(NamedRoutes.urlsPath(), UrlController::create);
+        app.get(NamedRoutes.urlsPath(), UrlController::index);
 
         return app;
     }
