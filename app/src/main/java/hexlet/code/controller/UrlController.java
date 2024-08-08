@@ -16,13 +16,17 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class UrlController {
     public static void create(Context ctx) {
-        String rawUrl = ctx.formParam("url");
         Url newUrl = null;
 
         try {
+            String rawUrl = ctx.formParam("url");
             URI uri = new URI(rawUrl);
             URL parsedUrl = uri.toURL();
-            newUrl = new Url(parsedUrl.getProtocol() + "://" + parsedUrl.getHost() + ":" + parsedUrl.getPort());
+            String newUrlName = parsedUrl.getProtocol() + "://" + parsedUrl.getHost();
+            if (parsedUrl.getPort() > 0) {
+                newUrlName += ":" + parsedUrl.getPort();
+            }
+            newUrl = new Url(newUrlName);
         } catch (Exception e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.redirect(NamedRoutes.rootPath());
@@ -51,8 +55,7 @@ public class UrlController {
 
         try {
             urls = UrlRepository.getEntities();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
             ctx.redirect(NamedRoutes.urlsPath());
             return;

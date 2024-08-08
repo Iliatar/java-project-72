@@ -18,17 +18,17 @@ content = @`
                     </tr>
                 </thead>
                 <tbody>
-                    @for (Url url : page.getUrls()) {
+                    @for (Url url : page.getUrls())
                         <tr>
                             <td>${url.getId()}</td>
                             <td>${url.getName()}</td>
                             <td>Не реализовано</td>
                             <td>Не реализовано</td>
                         </tr>
-                    }
+                    @endfor
                 </tbody>
             </table>
         </div>
     </section>
-`,
+    `,
 )
