@@ -21,7 +21,7 @@ content = @`
                     @for (Url url : page.getUrls())
                         <tr>
                             <td>${url.getId()}</td>
-                            <td>${url.getName()}</td>
+                            <td><a href="/urls/${url.getId()}">${url.getName()}</a></td>
                             <td>Не реализовано</td>
                             <td>Не реализовано</td>
                         </tr>

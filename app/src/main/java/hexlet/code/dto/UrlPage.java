@@ -1,0 +1,13 @@
+package hexlet.code.dto;
+
+import hexlet.code.model.Url;
+import lombok.Getter;
+
+@Getter
+public class UrlPage extends BasePage {
+    Url url;
+
+    public UrlPage(Url url) {
+        this.url = url;
+    }
+}

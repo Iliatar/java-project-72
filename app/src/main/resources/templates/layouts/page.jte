@@ -14,7 +14,7 @@
           integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
           crossorigin="anonymous">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100>">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <div class="container-fluid">
@@ -34,7 +34,7 @@
 
 <main class="flex-grow-1">
     @if(page != null && page.getFlash() != null)
-        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-danger" role="alert">
+        <div class="rounded-0 m-0 alert alert-dismissible fade show ${page.isSuccessFlag() ? "alert-success" : "alert-danger"}" role="alert">
             <p class="m-0">${page.getFlash()}</p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
