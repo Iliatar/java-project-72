@@ -24,7 +24,7 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    private static Javalin getApp() throws Exception {
+    public static void prepareDataBase() throws Exception {
         var hikariConfig = new HikariConfig();
         String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
         hikariConfig.setJdbcUrl(jdbcUrl);
@@ -41,6 +41,10 @@ public class App {
         }
 
         BaseRepository.dataSource = dataSource;
+    }
+
+    private static Javalin getApp() throws Exception {
+        prepareDataBase();
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
