@@ -25,15 +25,21 @@ public class App {
     }
 
     public static void prepareDataBase() throws Exception {
+        log.trace("Begin prepare database");
         var hikariConfig = new HikariConfig();
         String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        log.trace("jdbcUrl = " + jdbcUrl);
+
         hikariConfig.setJdbcUrl(jdbcUrl);
         var dataSource = new HikariDataSource(hikariConfig);
 
         var schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
+        log.trace("schemaFileName = " + schemaFileName);
         var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));
+
+        log.trace("sql = " + sql);
 
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
@@ -41,6 +47,7 @@ public class App {
         }
 
         BaseRepository.dataSource = dataSource;
+        log.trace("Database prepared successfully");
     }
 
     private static Javalin getApp() throws Exception {
