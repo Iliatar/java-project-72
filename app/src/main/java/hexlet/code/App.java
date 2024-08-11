@@ -1,21 +1,15 @@
 package hexlet.code;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.RootController;
 import hexlet.code.controller.UrlController;
-import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.DataSourceConfigurator;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
@@ -24,34 +18,10 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    public static void prepareDataBase() throws Exception {
-        log.trace("Begin prepare database");
-        var hikariConfig = new HikariConfig();
-        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        log.trace("jdbcUrl = " + jdbcUrl);
-
-        hikariConfig.setJdbcUrl(jdbcUrl);
-        var dataSource = new HikariDataSource(hikariConfig);
-
-        var schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
-        log.trace("schemaFileName = " + schemaFileName);
-        var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
-        var sql = new BufferedReader(new InputStreamReader(url))
-                .lines().collect(Collectors.joining("\n"));
-
-        log.trace("sql = " + sql);
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
-
-        BaseRepository.dataSource = dataSource;
-        log.trace("Database prepared successfully");
-    }
-
     private static Javalin getApp() throws Exception {
-        prepareDataBase();
+        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        String schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
+        DataSourceConfigurator.prepareDataBase(jdbcUrl, schemaFileName);
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();

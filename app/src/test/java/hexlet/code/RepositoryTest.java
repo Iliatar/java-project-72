@@ -3,13 +3,16 @@ package hexlet.code;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.DataSourceConfigurator;
 import hexlet.code.repository.UrlRepository;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Order;
 
 import java.io.ByteArrayOutputStream;
@@ -22,8 +25,8 @@ public class RepositoryTest {
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
     private final PrintStream standardOut = System.out;
     @BeforeAll
-    public static void prepareApp() throws Exception {
-        App.prepareDataBase();
+    public static void prepareDataBase() throws Exception {
+        DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
     }
     @BeforeEach
     public void setUp() {
@@ -32,6 +35,11 @@ public class RepositoryTest {
     @AfterEach
     public void tearDown() {
         System.setOut(standardOut);
+    }
+
+    @AfterAll
+    public static void closeDataSource() {
+        BaseRepository.dataSource.close();
     }
 
     @Test
