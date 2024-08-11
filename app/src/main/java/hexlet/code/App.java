@@ -18,11 +18,7 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    private static Javalin getApp() throws Exception {
-        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        String schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
-        DataSourceConfigurator.prepareDataBase(jdbcUrl, schemaFileName);
-
+    public static Javalin getApp() throws Exception {
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
@@ -45,6 +41,11 @@ public class App {
 
     public static void main(String[] args) {
         try {
+            String jdbcUrl = System.getenv()
+                    .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+            String schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
+
+            DataSourceConfigurator.prepareDataBase(jdbcUrl, schemaFileName);
             Javalin app = getApp();
             app.start(getPort());
         } catch (Exception e) {
