@@ -7,6 +7,8 @@ public class Url {
     private long id;
     private String name;
     private Timestamp createdAt;
+    private int lastStatusCode;
+    private Timestamp lastCheckAt;
 
     public Url(String name) {
         createdAt = Timestamp.valueOf(LocalDateTime.now());
@@ -32,5 +34,21 @@ public class Url {
 
     public Timestamp getCreatedAt() {
         return createdAt;
+    }
+
+    public int getLastStatusCode() {
+        return lastStatusCode;
+    }
+
+    public void setLastStatusCode(int lastStatusCode) {
+        this.lastStatusCode = lastStatusCode;
+    }
+
+    public Timestamp getLastCheckAt() {
+        return lastCheckAt;
+    }
+
+    public void setLastCheckAt(Timestamp lastCheckAt) {
+        this.lastCheckAt = lastCheckAt;
     }
 }

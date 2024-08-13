@@ -6,3 +6,13 @@ CREATE TABLE urls (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE url_checks (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    url_id BIGINT REFERENCES urls(id) NOT NULL,
+    status_code INT,
+    h1 VARCHAR(500),
+    title VARCHAR(500),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+

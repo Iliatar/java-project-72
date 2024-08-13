@@ -1,6 +1,7 @@
 package hexlet.code.repository;
 
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,6 +38,7 @@ public class UrlRepository extends BaseRepository {
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 Url url = new Url(name, createdAt);
                 url.setId(id);
+                fillLastUrlCheck(url);
                 return Optional.of(url);
             }
             return Optional.empty();
@@ -54,6 +56,7 @@ public class UrlRepository extends BaseRepository {
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 Url url = new Url(name, createdAt);
                 url.setId(id);
+                fillLastUrlCheck(url);
                 return Optional.of(url);
             }
             return Optional.empty();
@@ -72,9 +75,18 @@ public class UrlRepository extends BaseRepository {
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 Url url = new Url(name, createdAt);
                 url.setId(id);
+                fillLastUrlCheck(url);
                 result.add(url);
             }
             return result;
+        }
+    }
+
+    private static void fillLastUrlCheck(Url url) throws SQLException {
+        var lastUrlCheck = UrlCheckRepository.getLastUrlCheck(url.getId());
+        if (lastUrlCheck.isPresent()) {
+            url.setLastCheckAt(lastUrlCheck.get().getCreatedAt());
+            url.setLastStatusCode(lastUrlCheck.get().getStatusCode());
         }
     }
 }
