@@ -17,12 +17,10 @@ public class DataSourceConfigurator {
         log.trace("schemaFileName = " + schemaFileName);
 
         var hikariConfig = new HikariConfig();
-        //String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
 
         hikariConfig.setJdbcUrl(jdbcUrl);
         var dataSource = new HikariDataSource(hikariConfig);
 
-        //var schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
         var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));

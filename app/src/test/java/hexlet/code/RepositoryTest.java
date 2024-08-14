@@ -3,8 +3,10 @@ package hexlet.code;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.DataSourceConfigurator;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
@@ -18,12 +20,14 @@ import org.junit.jupiter.api.Order;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RepositoryTest {
     private static Url url;
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
     private final PrintStream standardOut = System.out;
+    private static final int CREATED_CHECKS_COUNT = 5;
     @BeforeAll
     public static void prepareDataBase() throws Exception {
         DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
@@ -71,5 +75,24 @@ public class RepositoryTest {
         assertEquals(url.getName(), storedUrl.getName());
         assertEquals(url.getCreatedAt().getDate(), storedUrl.getCreatedAt().getDate());
         assertEquals(url.getCreatedAt().getTime(), storedUrl.getCreatedAt().getTime());
+    }
+
+    @Test
+    @Order(4)
+    public void createChecks() throws SQLException {
+        int recordsCount = UrlCheckRepository.getAllUrlChecks(url.getId()).size();
+        for (int i = 1; i <= CREATED_CHECKS_COUNT; i++) {
+            UrlCheck urlCheck = new UrlCheck(200, "title text " + i, "h1 text" + i, "description text", url.getId());
+            UrlCheckRepository.save(urlCheck);
+        }
+        recordsCount += CREATED_CHECKS_COUNT;
+
+        List<UrlCheck> urlChecks = UrlCheckRepository.getAllUrlChecks(url.getId());
+        assertEquals(recordsCount, urlChecks.size());
+
+        assertEquals("h1 text" + CREATED_CHECKS_COUNT, urlChecks.get(0).getH1());
+
+        UrlCheck lastCheck = UrlCheckRepository.getLastUrlCheck(url.getId()).get();
+        assertEquals(urlChecks.get(0).getId(), lastCheck.getId());
     }
 }
