@@ -22,8 +22,8 @@ content = @`
                         <tr>
                             <td>${url.getId()}</td>
                             <td><a href="/urls/${url.getId()}">${url.getName()}</a></td>
-                            <td>Не реализовано</td>
-                            <td>Не реализовано</td>
+                            <td>${url.getLastCheckAt().toString()}</td>
+                            <td>${url.getLastStatusCode()}</td>
                         </tr>
                     @endfor
                 </tbody>
