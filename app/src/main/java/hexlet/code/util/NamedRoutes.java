@@ -10,4 +10,5 @@ public class NamedRoutes {
     public static String urlPath(String id) {
         return urlsPath() + "/" + id;
     }
+    public static String postCheckPath(String id) { return urlPath(id) + "/checks"; }
 }

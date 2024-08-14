@@ -79,4 +79,8 @@ public class UrlController {
             ctx.redirect(NamedRoutes.rootPath());
         }
     }
+
+    public static void checkUrl(Context ctx) {
+
+    }
 }
