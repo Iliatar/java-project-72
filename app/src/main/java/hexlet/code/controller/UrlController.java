@@ -18,6 +18,8 @@ import java.util.Optional;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 import kong.unirest.core.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class UrlController {
     public static void create(Context ctx) {
@@ -90,8 +92,23 @@ public class UrlController {
             var response = Unirest.get(urlName);
 
             int statusCode = response.asString().getStatus();
-            UrlCheck urlCheck = new UrlCheck(statusCode, "title", "h1", "desc", id);
-            UrlCheckRepository.save(urlCheck);
+            String title = "";
+            String h1 = "";
+            String desc = "";
+
+            if (response.asString().isSuccess()) {
+                Document body = Jsoup.parse(response.asString().getBody());
+                title = body.title();
+
+                if (body.selectFirst("h1") != null) {
+                    h1 = body.selectFirst("h1").text();
+                }
+                if (body.head().selectFirst("meta[name=description]") != null) {
+                    desc = body.head().selectFirst("meta[name=description]").attribute("content").getValue();
+                }
+            }
+
+            UrlCheckRepository.save(new UrlCheck(statusCode, title, h1, desc, id));
         } catch (SQLException e) {
             ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
         } finally {

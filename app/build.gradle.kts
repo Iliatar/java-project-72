@@ -34,6 +34,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.konghq:unirest-java-core:4.3.0")
     implementation("com.konghq:unirest-java-bom:4.3.0")
+    implementation("org.jsoup:jsoup:1.18.1")
 }
 
 tasks.test {
