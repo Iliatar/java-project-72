@@ -32,6 +32,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("com.h2database:h2:2.2.220")
     implementation("org.postgresql:postgresql:42.7.2")
+    implementation("com.konghq:unirest-java-core:4.3.0")
+    implementation("com.konghq:unirest-java-bom:4.3.0")
 }
 
 tasks.test {

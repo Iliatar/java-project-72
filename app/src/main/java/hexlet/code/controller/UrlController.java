@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
+import kong.unirest.core.Unirest;
 
 public class UrlController {
     public static void create(Context ctx) {
@@ -81,6 +82,21 @@ public class UrlController {
     }
 
     public static void checkUrl(Context ctx) {
+        Long id = ctx.pathParamAsClass("id", Long.class).get();
+        try {
+            Url url = UrlRepository.find(id)
+                    .orElseThrow(() -> new NotFoundResponse("Entity with id = \" + id + \" not found"));
+            String urlName = url.getName();
+            var response = Unirest.get(urlName);
 
+            int statusCode = response.asString().getStatus();
+            UrlCheck urlCheck = new UrlCheck(statusCode, "title", "h1", "desc", id);
+            UrlCheckRepository.save(urlCheck);
+        } catch (SQLException e) {
+            ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
+        } finally {
+            Unirest.shutDown();
+            ctx.redirect(NamedRoutes.urlPath(id.toString()));
+        }
     }
 }

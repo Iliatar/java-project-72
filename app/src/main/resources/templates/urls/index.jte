@@ -22,13 +22,13 @@ content = @`
                         <tr>
                             <td>${url.getId()}</td>
                             <td><a href="/urls/${url.getId()}">${url.getName()}</a></td>
-                            <td>${url.getLastCheckAt().toString()}</td>
-                            <td>${url.getLastStatusCode()}</td>
+                            <td>@if (url.getLastCheckAt() != null) ${url.getLastCheckAt().toString()} @endif</td>
+                            <td>@if (url.getLastCheckAt() != null) ${url.getLastStatusCode()} @endif</td>
                         </tr>
                     @endfor
                 </tbody>
             </table>
         </div>
     </section>
-    `,
+`,
 )
