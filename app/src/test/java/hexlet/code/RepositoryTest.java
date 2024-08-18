@@ -8,6 +8,7 @@ import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.DataSourceConfigurator;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,6 +23,7 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RepositoryTest {
     private static Url url;

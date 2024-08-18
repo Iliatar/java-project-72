@@ -50,8 +50,6 @@ public class UrlController {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.redirect(NamedRoutes.rootPath());
         }
-
-
     }
 
     public static void index(Context ctx) {
@@ -85,19 +83,20 @@ public class UrlController {
 
     public static void checkUrl(Context ctx) {
         Long id = ctx.pathParamAsClass("id", Long.class).get();
+
         try {
             Url url = UrlRepository.find(id)
                     .orElseThrow(() -> new NotFoundResponse("Entity with id = \" + id + \" not found"));
             String urlName = url.getName();
-            var response = Unirest.get(urlName);
+            var response = Unirest.get(urlName).asString();
 
-            int statusCode = response.asString().getStatus();
+            int statusCode = response.getStatus();
             String title = "";
             String h1 = "";
             String desc = "";
 
-            if (response.asString().isSuccess()) {
-                Document body = Jsoup.parse(response.asString().getBody());
+            if (response.isSuccess()) {
+                Document body = Jsoup.parse(response.getBody());
                 title = body.title();
 
                 if (body.selectFirst("h1") != null) {
