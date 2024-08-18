@@ -1,7 +1,6 @@
 package hexlet.code;
 
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.repository.DataSourceConfigurator;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -37,7 +36,7 @@ public class AppTest {
 
     @BeforeAll
     public static final void setUpAll() throws Exception {
-        DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
+        //DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
 
         mockServer = new MockWebServer();
         MockResponse mockResponse = new MockResponse();
@@ -84,21 +83,15 @@ public class AppTest {
             assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
 
             assertEquals(++recordsCount, UrlRepository.getEntities().size());
-        });
-    }
 
-    @Test
-    @Order(3)
-    public final void testUrlPage() {
-        JavalinTest.test(app, (server, client) -> {
-            var response = client.get(NamedRoutes.urlPath("1"));
+            response = client.get(NamedRoutes.urlPath("1"));
             assertEquals(200, response.code());
             assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
         });
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public final void testNotFoundUrlPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlPath("999"));
@@ -107,15 +100,20 @@ public class AppTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public final void testUrlCheck() {
         JavalinTest.test(app, (server, client) -> {
-                var response = client.post(NamedRoutes.postCheckPath("1"));
-                String responseBodyString = response.body().string();
-                assertEquals(200, response.code());
-                assertTrue(responseBodyString.contains("Проверка title"));
-                assertTrue(responseBodyString.contains("Проверка description"));
-                assertTrue(responseBodyString.contains("Проверка h1"));
+            String requestBody = "url=" + mockUrl;
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            assertEquals(200, response.code());
+            assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
+
+            response = client.post(NamedRoutes.postCheckPath("1"));
+            String responseBodyString = response.body().string();
+            assertEquals(200, response.code());
+            assertTrue(responseBodyString.contains("Проверка title"));
+            assertTrue(responseBodyString.contains("Проверка description"));
+            assertTrue(responseBodyString.contains("Проверка h1"));
             }
         );
     }
