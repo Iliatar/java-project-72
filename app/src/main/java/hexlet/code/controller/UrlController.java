@@ -56,10 +56,12 @@ public class UrlController {
         try {
             List<Url> urls = UrlRepository.getEntities();
             UrlIndexPage page = new UrlIndexPage(urls);
+
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             if (ctx.consumeSessionAttribute("successFlag") == "true") {
                 page.setSuccessFlag(true);
             }
+            
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
             ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
@@ -74,6 +76,12 @@ public class UrlController {
                     .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
             List<UrlCheck> urlChecks = UrlCheckRepository.getAllUrlChecks(id);
             UrlPage page = new UrlPage(url, urlChecks);
+
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
+            if (ctx.consumeSessionAttribute("successFlag") == "true") {
+                page.setSuccessFlag(true);
+            }
+
             ctx.render("urls/show.jte", model("page", page));
         } catch (SQLException e) {
             ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
