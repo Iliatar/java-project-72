@@ -22,7 +22,7 @@ content = @`
                         <tr>
                             <td>${url.getId()}</td>
                             <td><a href="/urls/${url.getId()}">${url.getName()}</a></td>
-                            <td>@if (url.getLastCheckAt() != null) ${url.getLastCheckAt().toString()} @endif</td>
+                            <td>${url.getFormattedLastCheckAt()}</td>
                             <td>@if (url.getLastCheckAt() != null) ${url.getLastStatusCode()} @endif</td>
                         </tr>
                     @endfor

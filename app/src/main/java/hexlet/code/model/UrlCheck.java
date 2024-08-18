@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,5 +27,13 @@ public class UrlCheck {
         this.description = description;
         this.urlId = urlId;
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    public String getFormattedCreatedAt() {
+        if (createdAt != null) {
+            return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(createdAt);
+        } else {
+            return "";
+        }
     }
 }

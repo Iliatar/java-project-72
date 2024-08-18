@@ -1,6 +1,7 @@
 package hexlet.code.model;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class Url {
@@ -35,6 +36,13 @@ public class Url {
     public Timestamp getCreatedAt() {
         return createdAt;
     }
+    public String getFormattedCreatedAt() {
+        if (createdAt != null) {
+            return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(createdAt);
+        } else {
+            return "";
+        }
+    }
 
     public int getLastStatusCode() {
         return lastStatusCode;
@@ -46,6 +54,13 @@ public class Url {
 
     public Timestamp getLastCheckAt() {
         return lastCheckAt;
+    }
+    public String getFormattedLastCheckAt() {
+        if (lastCheckAt != null) {
+            return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(lastCheckAt);
+        } else {
+            return "";
+        }
     }
 
     public void setLastCheckAt(Timestamp lastCheckAt) {
