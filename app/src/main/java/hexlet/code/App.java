@@ -11,6 +11,8 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.SQLException;
+
 @Slf4j
 public class App {
     private static int getPort() {
@@ -18,7 +20,7 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    public static Javalin getApp() throws Exception {
+    public static Javalin getApp() throws SQLException {
         String jdbcUrl = System.getenv()
                 .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
         String schemaFileName = jdbcUrl.contains("postgresql") ? "schemaPostgree.sql" : "schemaH2.sql";

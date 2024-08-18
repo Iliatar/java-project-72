@@ -7,11 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class DataSourceConfigurator {
-    public static void prepareDataBase(String jdbcUrl, String schemaFileName) throws Exception {
+    public static void prepareDataBase(String jdbcUrl, String schemaFileName) throws SQLException {
         log.trace("Begin prepare database");
         log.trace("jdbcUrl = " + jdbcUrl);
         log.trace("schemaFileName = " + schemaFileName);
