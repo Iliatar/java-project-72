@@ -61,7 +61,7 @@ public class UrlController {
             if (ctx.consumeSessionAttribute("successFlag") == "true") {
                 page.setSuccessFlag(true);
             }
-            
+
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
             ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
