@@ -47,12 +47,12 @@ public class AppTest {
         mockUrl = mockServer.url("/").toString();
     }
     @BeforeEach
-    public void setUpEach() throws Exception {
+    public final void setUpEach() throws Exception {
         app = App.getApp();
         System.setOut(new PrintStream(output));
     }
     @AfterEach
-    public void tearDown() {
+    public final void tearDown() {
         System.setOut(standardOut);
     }
     @AfterAll

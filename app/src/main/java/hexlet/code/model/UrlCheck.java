@@ -29,7 +29,7 @@ public class UrlCheck {
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public String getFormattedCreatedAt() {
+    public final String getFormattedCreatedAt() {
         if (createdAt != null) {
             return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(createdAt);
         } else {

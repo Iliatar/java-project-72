@@ -35,11 +35,11 @@ public class RepositoryTest {
         DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
     }
     @BeforeEach
-    public void setUp() {
+    public final void setUp() {
         System.setOut(new PrintStream(output));
     }
     @AfterEach
-    public void tearDown() {
+    public final void tearDown() {
         System.setOut(standardOut);
     }
 

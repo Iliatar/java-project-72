@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
-public class Url {
+public final class Url {
     private long id;
     private String name;
     private Timestamp createdAt;
