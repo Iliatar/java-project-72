@@ -21,7 +21,7 @@ public class App {
     public static Javalin getApp() throws Exception {
         String jdbcUrl = System.getenv()
                 .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        String schemaFileName = System.getenv().getOrDefault("SCHEMA_FILE_NAME", "schemaH2.sql");
+        String schemaFileName = jdbcUrl.contains("postgresql") ? "schemaPostgree.sql" : "schemaH2.sql";
 
         DataSourceConfigurator.prepareDataBase(jdbcUrl, schemaFileName);
 

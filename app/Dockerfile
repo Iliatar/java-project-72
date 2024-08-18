@@ -21,6 +21,5 @@ COPY /app .
 RUN gradle installDist
 
 ENV JDBC_DATABASE_URL=jdbc:postgresql://dpg-cqm7enjqf0us73a6kjc0-a:5432/project_huwa?password=yjcRh5CTyTzOo5LkMzxAxK3zwjaWxl9K&user=project_huwa_user
-ENV SCHEMA_FILE_NAME=schemaPostgree.sql
 
 CMD ./build/install/app/bin/app
