@@ -2,8 +2,6 @@ package hexlet.code.repository;
 
 import hexlet.code.model.UrlCheck;
 
-import java.io.StringReader;
-import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -21,7 +19,7 @@ public class UrlCheckRepository extends BaseRepository {
             preparedStatement.setInt(2, urlCheck.getStatusCode());
             preparedStatement.setString(3, urlCheck.getH1());
             preparedStatement.setString(4, urlCheck.getTitle());
-            preparedStatement.setClob(5, new StringReader(urlCheck.getDescription()));
+            preparedStatement.setString(5, urlCheck.getDescription());
             preparedStatement.setTimestamp(6, urlCheck.getCreatedAt());
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
@@ -43,8 +41,7 @@ public class UrlCheckRepository extends BaseRepository {
                 int statusCode = resultSet.getInt("status_code");
                 String title = resultSet.getString("title");
                 String h1 = resultSet.getString("h1");
-                Clob clob = resultSet.getClob("description");
-                String desc = clob.getSubString(1, (int) clob.length());
+                String desc = resultSet.getString("description");
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 UrlCheck urlCheck = new UrlCheck(id, statusCode, title, h1, desc, urlId, createdAt);
                 return Optional.of(urlCheck);
@@ -65,8 +62,7 @@ public class UrlCheckRepository extends BaseRepository {
                 int statusCode = resultSet.getInt("status_code");
                 String title = resultSet.getString("title");
                 String h1 = resultSet.getString("h1");
-                Clob clob = resultSet.getClob("description");
-                String desc = clob.getSubString(1, (int) clob.length());
+                String desc = resultSet.getString("description");
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 UrlCheck urlCheck = new UrlCheck(id, statusCode, title, h1, desc, urlId, createdAt);
                 result.add(urlCheck);
