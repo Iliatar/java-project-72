@@ -18,7 +18,7 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    public static Javalin getApp() throws Exception {
+    public static Javalin getApp() {
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
