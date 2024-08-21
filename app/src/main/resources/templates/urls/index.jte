@@ -1,4 +1,5 @@
 @import hexlet.code.model.Url
+@import java.time.format.DateTimeFormatter
 
 @param hexlet.code.dto.UrlIndexPage page
 
@@ -22,7 +23,7 @@ content = @`
                         <tr>
                             <td>${url.getId()}</td>
                             <td><a href="/urls/${url.getId()}">${url.getName()}</a></td>
-                            <td>${url.getFormattedLastCheckAt()}</td>
+                            <td>@if (url.getLastCheckAt() != null) ${url.getLastCheckAt().format(DateTimeFormatter.ofPattern("dd/MM/YYYY kk:mm:ss"))} @endif</td>
                             <td>@if (url.getLastCheckAt() != null) ${url.getLastStatusCode()} @endif</td>
                         </tr>
                     @endfor

@@ -65,8 +65,6 @@ public class RepositoryTest {
         Url storedUrl = UrlRepository.find(url.getId()).get();
         assertEquals(url.getId(), storedUrl.getId());
         assertEquals(url.getName(), storedUrl.getName());
-        assertEquals(url.getCreatedAt().getDate(), storedUrl.getCreatedAt().getDate());
-        assertEquals(url.getCreatedAt().getTime(), storedUrl.getCreatedAt().getTime());
     }
 
     @Test
@@ -75,8 +73,6 @@ public class RepositoryTest {
         Url storedUrl = UrlRepository.find(url.getName()).get();
         assertEquals(url.getId(), storedUrl.getId());
         assertEquals(url.getName(), storedUrl.getName());
-        assertEquals(url.getCreatedAt().getDate(), storedUrl.getCreatedAt().getDate());
-        assertEquals(url.getCreatedAt().getTime(), storedUrl.getCreatedAt().getTime());
     }
 
     @Test

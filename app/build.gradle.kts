@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     application
-    java
     checkstyle
     jacoco
     id("io.freefair.lombok") version "8.6"

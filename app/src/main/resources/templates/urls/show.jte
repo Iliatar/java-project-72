@@ -1,4 +1,5 @@
 @import hexlet.code.model.UrlCheck
+@import java.time.format.DateTimeFormatter
 
 @param hexlet.code.dto.UrlPage page
 
@@ -20,7 +21,7 @@ content = @`
                 </tr>
                 <tr>
                     <td>Дата создания</td>
-                    <td>${page.getUrl().getFormattedCreatedAt()}</td>
+                    <td>${page.getUrl().getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/YYYY kk:mm:ss"))}</td>
                 </tr>
                 </tbody>
             </table>
@@ -47,7 +48,7 @@ content = @`
                         <td>${check.getTitle()}</td>
                         <td>${check.getH1()}</td>
                         <td>${check.getDescription()}</td>
-                        <td>${check.getFormattedCreatedAt()}</td>
+                        <td>${check.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/YYYY kk:mm:ss"))}</td>
                     </tr>
                 @endfor
                 </tbody>
