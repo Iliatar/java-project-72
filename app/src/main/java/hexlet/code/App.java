@@ -23,9 +23,8 @@ public class App {
     public static Javalin getApp() throws SQLException {
         String jdbcUrl = System.getenv()
                 .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        String schemaFileName = jdbcUrl.contains("postgresql") ? "schemaPostgree.sql" : "schemaH2.sql";
 
-        DataSourceConfigurator.prepareDataBase(jdbcUrl, schemaFileName);
+        DataSourceConfigurator.prepareDataBase(jdbcUrl);
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();

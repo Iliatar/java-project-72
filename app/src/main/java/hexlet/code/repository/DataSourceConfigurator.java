@@ -12,21 +12,19 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class DataSourceConfigurator {
-    public static void prepareDataBase(String jdbcUrl, String schemaFileName) throws SQLException {
+    private static final String SCHEMA_FILE_NAME = "schema.sql";
+    public static void prepareDataBase(String jdbcUrl) throws SQLException {
         log.trace("Begin prepare database");
         log.trace("jdbcUrl = " + jdbcUrl);
-        log.trace("schemaFileName = " + schemaFileName);
 
         var hikariConfig = new HikariConfig();
 
         hikariConfig.setJdbcUrl(jdbcUrl);
         var dataSource = new HikariDataSource(hikariConfig);
 
-        var url = App.class.getClassLoader().getResourceAsStream(schemaFileName);
+        var url = App.class.getClassLoader().getResourceAsStream(SCHEMA_FILE_NAME);
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));
-
-        log.trace("sql = " + sql);
 
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {

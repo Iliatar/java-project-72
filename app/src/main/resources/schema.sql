@@ -13,7 +13,7 @@ CREATE TABLE url_checks (
     status_code INT,
     h1 VARCHAR(500),
     title VARCHAR(500),
-    description CLOB,
+    description text,
     created_at TIMESTAMP DEFAULT NOW()
 );
 

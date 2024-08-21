@@ -32,7 +32,7 @@ public class RepositoryTest {
     private static final int CREATED_CHECKS_COUNT = 5;
     @BeforeAll
     public static void prepareDataBase() throws Exception {
-        DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
+        DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
     }
     @BeforeEach
     public final void setUp() {
