@@ -1,6 +1,8 @@
 package hexlet.code;
 
+import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -28,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AppTest {
+    private static final String TEST_TITLE = "Проверка title";
+    private static final String TEST_DESC = "Проверка description";
+    private static final String TEST_H_1 = "Проверка h1";
     static Javalin app;
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
     private final PrintStream standardOut = System.out;
@@ -36,8 +41,6 @@ public class AppTest {
 
     @BeforeAll
     public static final void setUpAll() throws Exception {
-        //DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;", "schemaH2.sql");
-
         mockServer = new MockWebServer();
         MockResponse mockResponse = new MockResponse();
         String testHtmlPageBody = Files.readString(Paths.get("src/test/resources/testPage.html"));
@@ -84,7 +87,9 @@ public class AppTest {
 
             assertEquals(++recordsCount, UrlRepository.getEntities().size());
 
-            response = client.get(NamedRoutes.urlPath("1"));
+            Long id = UrlRepository.find(mockUrl.substring(0, mockUrl.length() - 1)).get().getId();
+
+            response = client.get(NamedRoutes.urlPath(id.toString()));
             assertEquals(200, response.code());
             assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
         });
@@ -108,13 +113,20 @@ public class AppTest {
             assertEquals(200, response.code());
             assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
 
-            response = client.post(NamedRoutes.postCheckPath("1"));
+            Long id = UrlRepository.find(mockUrl.substring(0, mockUrl.length() - 1)).get().getId();
+
+            response = client.post(NamedRoutes.postCheckPath(id.toString()));
             String responseBodyString = response.body().string();
             assertEquals(200, response.code());
-            assertTrue(responseBodyString.contains("Проверка title"));
-            assertTrue(responseBodyString.contains("Проверка description"));
-            assertTrue(responseBodyString.contains("Проверка h1"));
-            }
-        );
+            assertTrue(responseBodyString.contains(TEST_TITLE));
+            assertTrue(responseBodyString.contains(TEST_DESC));
+            assertTrue(responseBodyString.contains(TEST_H_1));
+
+            UrlCheck urlCheck = UrlCheckRepository.getLastUrlCheck(id).get();
+            assertEquals(id, urlCheck.getUrlId());
+            assertEquals(TEST_TITLE, urlCheck.getTitle());
+            assertEquals(TEST_DESC, urlCheck.getDescription());
+            assertEquals(TEST_H_1, urlCheck.getH1());
+        });
     }
 }
