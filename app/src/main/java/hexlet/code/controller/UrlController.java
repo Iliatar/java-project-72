@@ -64,19 +64,11 @@ public class UrlController {
         ctx.render("urls/index.jte", model("page", page));
     }
 
-    public static void show(Context ctx) {
+    public static void show(Context ctx) throws SQLException {
         Long id = ctx.pathParamAsClass("id", Long.class).get();
-        Url url;
-        List<UrlCheck> urlChecks;
-        try {
-            url = UrlRepository.find(id)
-                    .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
-            urlChecks = UrlCheckRepository.getAllUrlChecks(id);
-        } catch (SQLException e) {
-            ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
-            ctx.redirect(NamedRoutes.rootPath());
-            return;
-        }
+        Url url = UrlRepository.find(id)
+                .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
+        List<UrlCheck> urlChecks = UrlCheckRepository.getAllUrlChecks(id);
 
         UrlPage page = new UrlPage(url, urlChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
