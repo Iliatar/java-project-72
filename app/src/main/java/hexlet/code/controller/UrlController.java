@@ -54,17 +54,8 @@ public class UrlController {
         }
     }
 
-    public static void index(Context ctx) {
-        List<Url> urls;
-
-        try {
-            urls = UrlRepository.getEntities();
-        } catch (SQLException e) {
-            ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
-            ctx.redirect(NamedRoutes.rootPath());
-            return;
-        }
-
+    public static void index(Context ctx) throws SQLException {
+        List<Url> urls = UrlRepository.getEntities();
         UrlIndexPage page = new UrlIndexPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         if (ctx.consumeSessionAttribute("successFlag") == "true") {
