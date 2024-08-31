@@ -18,10 +18,12 @@ import java.util.Optional;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
+import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 public class UrlController {
     public static void create(Context ctx) throws SQLException {
@@ -79,42 +81,32 @@ public class UrlController {
         ctx.render("urls/show.jte", model("page", page));
     }
 
-    public static void checkUrl(Context ctx) {
+    public static void checkUrl(Context ctx) throws SQLException {
         Long id = ctx.pathParamAsClass("id", Long.class).get();
-        Url url;
+        Url url = UrlRepository.find(id)
+                .orElseThrow(() -> new NotFoundResponse("Entity with id = \" + id + \" not found"));
 
+        String urlName = url.getName();
+        HttpResponse<String> response = null;
         try {
-            url = UrlRepository.find(id)
-                    .orElseThrow(() -> new NotFoundResponse("Entity with id = \" + id + \" not found"));
-
-            String urlName = url.getName();
-            var response = Unirest.get(urlName).asString();
-
-            int statusCode = response.getStatus();
-            String title = "";
-            String h1 = "";
-            String desc = "";
-
-            if (response.isSuccess()) {
-                Document body = Jsoup.parse(response.getBody());
-                title = body.title();
-
-                if (body.selectFirst("h1") != null) {
-                    h1 = body.selectFirst("h1").text();
-                }
-                if (body.head().selectFirst("meta[name=description]") != null) {
-                    desc = body.head().selectFirst("meta[name=description]").attribute("content").getValue();
-                }
-            }
-
-            UrlCheckRepository.save(new UrlCheck(statusCode, title, h1, desc, id));
+            response = Unirest.get(urlName).asString();
         } catch (UnirestException e) {
-            ctx.sessionAttribute("flash", "Некорректный адрес");
-        } catch (SQLException e) {
-            ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
-        } finally {
             Unirest.shutDown();
+            ctx.sessionAttribute("flash", "Некорректный адрес");
             ctx.redirect(NamedRoutes.urlPath(id.toString()));
+            return;
         }
+
+        int statusCode = response.getStatus();
+        Document doc = Jsoup.parse(response.getBody());
+        String title = doc.title();
+        Element h1Element = doc.selectFirst("h1");
+        String h1 = h1Element == null ? "" : h1Element.text();
+        Element descElement = doc.selectFirst("meta[name=description]");
+        String desc = descElement == null ? "" : descElement.attr("content");
+
+        UrlCheckRepository.save(new UrlCheck(statusCode, title, h1, desc, id));
+        Unirest.shutDown();
+        ctx.redirect(NamedRoutes.urlPath(id.toString()));
     }
 }

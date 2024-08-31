@@ -1,7 +1,9 @@
 package hexlet.code;
 
+//import hexlet.code.model.UrlCheck;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.BaseRepository;
+//import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
@@ -110,13 +112,14 @@ public class AppTest {
         JavalinTest.test(app, (server, client) -> {
             String requestBody = "url=" + mockUrl;
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            String responseBodyString = response.body().string();
             assertEquals(200, response.code());
-            assertTrue(response.body().string().contains(mockUrl.substring(0, mockUrl.length() - 1)));
+            assertTrue(responseBodyString.contains(mockUrl.substring(0, mockUrl.length() - 1)));
 
             Long id = UrlRepository.find(mockUrl.substring(0, mockUrl.length() - 1)).get().getId();
 
             response = client.post(NamedRoutes.postCheckPath(id.toString()));
-            String responseBodyString = response.body().string();
+            responseBodyString = response.body().string();
             assertEquals(200, response.code());
             assertTrue(responseBodyString.contains(TEST_TITLE));
             assertTrue(responseBodyString.contains(TEST_DESC));
