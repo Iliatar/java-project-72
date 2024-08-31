@@ -17,13 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
+
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class UrlController {
-    public static void create(Context ctx) {
+    public static void create(Context ctx) throws SQLException {
         URL parsedUrl;
         String rawUrl = ctx.formParam("url");
 
@@ -41,22 +42,15 @@ public class UrlController {
             newUrlName += ":" + parsedUrl.getPort();
         }
         Url newUrl = new Url(newUrlName);
-        Optional<Url> storedUrl;
-
-        try {
-            storedUrl = UrlRepository.find(newUrl.getName());
-            if (storedUrl.isPresent()) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.redirect(NamedRoutes.urlsPath());
-            } else {
-                UrlRepository.save(newUrl);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("successFlag", "true");
-                ctx.redirect(NamedRoutes.urlsPath());
-            }
-        } catch (SQLException e) {
-            ctx.sessionAttribute("flash", "Ошибка при обращении к базе данных: " + e.getMessage());
-            ctx.redirect(NamedRoutes.rootPath());
+        Optional<Url> storedUrl = UrlRepository.find(newUrl.getName());
+        if (storedUrl.isPresent()) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.redirect(NamedRoutes.urlsPath());
+        } else {
+            UrlRepository.save(newUrl);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("successFlag", "true");
+            ctx.redirect(NamedRoutes.urlsPath());
         }
     }
 
