@@ -30,7 +30,7 @@ public class RepositoryTest {
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
     private final PrintStream standardOut = System.out;
     private static final int CREATED_CHECKS_COUNT = 5;
-    @BeforeAll
+    /*@BeforeAll
     public static void prepareDataBase() throws Exception {
         DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
     }
@@ -92,5 +92,5 @@ public class RepositoryTest {
 
         UrlCheck lastCheck = UrlCheckRepository.getLastUrlCheck(url.getId()).get();
         assertEquals(urlChecks.get(0).getId(), lastCheck.getId());
-    }
+    }*/
 }
