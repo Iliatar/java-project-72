@@ -86,26 +86,23 @@ public class UrlController {
         Url url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = \" + id + \" not found"));
 
-        String urlName = url.getName();
-        HttpResponse<String> response = null;
         try {
-            response = Unirest.get(urlName).asString();
+            HttpResponse<String> response = Unirest.get(url.getName()).asString();
+            Document doc = Jsoup.parse(response.getBody());
+            int statusCode = response.getStatus();
+            String title = doc.title();
+            Element h1Element = doc.selectFirst("h1");
+            String h1 = h1Element == null ? "" : h1Element.text();
+            Element descElement = doc.selectFirst("meta[name=description]");
+            String desc = descElement == null ? "" : descElement.attr("content");
+            UrlCheckRepository.save(new UrlCheck(statusCode, title, h1, desc, id));
         } catch (UnirestException e) {
-            Unirest.shutDown();
             ctx.sessionAttribute("flash", "Некорректный адрес");
-            ctx.redirect(NamedRoutes.urlPath(id.toString()));
-            return;
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", e.getMessage());
         }
 
-        int statusCode = response.getStatus();
-        Document doc = Jsoup.parse(response.getBody());
-        String title = doc.title();
-        Element h1Element = doc.selectFirst("h1");
-        String h1 = h1Element == null ? "" : h1Element.text();
-        Element descElement = doc.selectFirst("meta[name=description]");
-        String desc = descElement == null ? "" : descElement.attr("content");
 
-        UrlCheckRepository.save(new UrlCheck(statusCode, title, h1, desc, id));
         Unirest.shutDown();
         ctx.redirect(NamedRoutes.urlPath(id.toString()));
     }
