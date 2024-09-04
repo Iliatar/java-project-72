@@ -41,7 +41,7 @@ public class AppTest {
     private static MockWebServer mockServer;
     private static String mockUrl;
 
-    /*@BeforeAll
+    @BeforeAll
     public static final void setUpAll() throws Exception {
         mockServer = new MockWebServer();
         MockResponse mockResponse = new MockResponse();
@@ -131,5 +131,5 @@ public class AppTest {
             assertEquals(TEST_DESC, urlCheck.getDescription());
             assertEquals(TEST_H_1, urlCheck.getH1());
         });
-    }*/
+    }
 }

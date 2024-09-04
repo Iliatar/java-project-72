@@ -21,8 +21,10 @@ public class App {
     }
 
     public static Javalin getApp() throws SQLException {
-        String jdbcUrl = System.getenv()
-                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        //String jdbcUrl = System.getenv()
+        //        .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+
+        String jdbcUrl = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
 
         DataSourceConfigurator.prepareDataBase(jdbcUrl);
 
