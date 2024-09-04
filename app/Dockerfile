@@ -20,6 +20,6 @@ COPY /app .
 
 RUN gradle installDist
 
-ENV JDBC_DATABASE_URL=jdbc:postgresql://dpg-crbu30qj1k6c738f6org-a:5432/java_project_72_p6q9?password=Wm4w8NA2eOALCRuZQvdPZYeL3wcBTyoy&user=java_project_72_p6q9_user
+ENV JDBC_DATABASE_URL=jdbc:postgresql://dpg-crbu30qj1k6c738f6org-a:5432/project_huwa?password=Wm4w8NA2eOALCRuZQvdPZYeL3wcBTyoy&user=java_project_72_p6q9_user
 
 CMD ./build/install/app/bin/app
