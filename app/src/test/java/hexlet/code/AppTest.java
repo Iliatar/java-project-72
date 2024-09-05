@@ -1,4 +1,4 @@
-/*package hexlet.code;
+package hexlet.code;
 
 //import hexlet.code.model.UrlCheck;
 import hexlet.code.model.UrlCheck;
@@ -133,4 +133,3 @@ public class AppTest {
         });
     }
 }
-*/

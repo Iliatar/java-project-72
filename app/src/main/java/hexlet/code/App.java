@@ -22,7 +22,7 @@ public class App {
 
     public static Javalin getApp() throws SQLException {
         String jdbcUrl = System.getenv()
-                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;");
+                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
 
         DataSourceConfigurator.prepareDataBase(jdbcUrl);
 
