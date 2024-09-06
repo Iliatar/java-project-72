@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.repository.DataSourceConfigurator;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class RepositoryTest {
     private static final int CREATED_CHECKS_COUNT = 5;
     @BeforeAll
     public static void prepareDataBase() throws Exception {
-        DataSourceConfigurator.prepareDataBase("jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        App.getApp();
     }
     @BeforeEach
     public final void setUp() {
